@@ -29,7 +29,7 @@ Ensure you have Python 3.8+ installed, then run:
 
    ```bash
    pip install -r requirements.txt
-```
+   ```
 **Required packages include:** torch, torchvision, opencv-python, mediapipe, ultralytics, and PyQt5.
 
 3. **Download or Train Models:**
@@ -41,10 +41,10 @@ Train from scratch: Run python train_yolo.py to train the YOLOv8n-cls model on y
 4. **Usage**
 To launch the real-time translation interface, execute:
 
- ```Bash
-python main.py
- ```
+   ```Bash
+   python main.py
+   ```
 The UI will initialize the webcam, load the YOLO classification model (with a fallback to the base model if custom weights are missing), and immediately begin processing hand gestures. The top prediction will display on the screen once the model hits a 60% confidence threshold.
 
-4. **Author**
+
 Developed by **Md. Rayhan Islam Showrav - 0112230810**.
