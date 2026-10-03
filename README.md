@@ -94,4 +94,4 @@ The complete methodology, system design, hardware setup, and empirical evaluatio
 
 ---
 
-Developed by **Team Auditory Cortex** (Md. Rayhan Islam Showrav - 0112230810).
+Developed by **Team Auditory Cortex**.
