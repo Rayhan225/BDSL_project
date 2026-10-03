@@ -1,0 +1,15 @@
+# Datasets & Large Binary Arrays
+*.npy
+BL_Data/
+Final_Dataset/
+data/
+
+# Python / IDE cache
+__pycache__/
+*.pyc
+.idea/
+.vscode/
+
+# Weights & Large Models (optional, uncomment if needed)
+# *.pt
+# *.h5

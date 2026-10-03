@@ -1,0 +1,10 @@
+%Abstract
+\setlength{\headheight}{14pt}
+\begin{center}
+	{\huge \bf Abstract}
+	\line(1,0){430}
+\end{center}
+
+There exist a massive number of deaf and people with hearing disabilities in Bangladesh who have a communication gap with other. Moreover it lack technological, realtime support for Bangla Sign Language (BdSL), as most of the existing solutions are word level and lacks context awareness while sentence translation. Our project, titled "Onubad" will try to  addresses this gap by simply making a translator hence the name Onubad. Our intelligent system will translates BdSL gestures into meaningful Bangla text. Our proposed methodology will try to utilize a Dual Stream Semantic Fusion Architecture\cite{study_dualstream_bilstm_2025}, which uses MediaPipe\cite{study_reliable_mediapipe_2024} to extract gesture landmarks from realtime video inputs from the users then the system uses a parallel stream procedure by using a Transformer based\cite{study_transformer_bdsl_2025} word spotter for frequently used word signs and a YOLO Nano \cite{yolo_nano_ref}based character spotter for fingerspelling characters. Then both these output streams are merged and processed by a quantized edge level Large Language Model (LLM) \cite{llm_reasoning_review}that performs semantic reconstruction which will ensure grammatical accuracy and make contextually meaningful sentence.
+\clearpage
+\setlength{\headheight}{12pt}

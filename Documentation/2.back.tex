@@ -1,0 +1,112 @@
+\chapter{Background}
+
+This chapter looks in to the contextual foundation of the project 'Onubad'. It introduces the main theme and the technologies of AI-Based Bangla Sign Language (BdSL) recognition, critically reviews most of the existing literature \cite{4, 55}, and also conducts necessary gap analysis to justify the proposed Dual-Stream Semantic Fusion Architecture.
+
+\section{Preliminaries}
+
+In this section, we provide the necessary background knowledge to understand the rest of the report. The primary domain of our research aligns Computer Vision and Natural Language Processing (NLP) to interpret and translate Bangla Sign Language. The main ideas include:
+
+\begin{itemize}
+    \item \textbf{Sign Language Recognition (SLR):} The step  by step process of finding out the meaning of hand movements, poses and facial expressions in a sign language. \cite{study_yolo_slr_2025}.
+    \item \textbf{MediaPipe for Landmark Extraction:} It is a library designed by Google to find out the 3D datapoints obtained from 2D video inputs in real time. \cite{mediapipe_framework}.
+    \item \textbf{Transformer Architectures:} This is deep learning model used to handle sequential data using self-attention mechanism. \cite{transformer_seq}.
+    \item \textbf{YOLO (You Only Look Once):} It is a fast object detection technique that we have used in our model for the real-time detection of the finger spelling signs \cite{96, 97, yolo_nano_ref}.
+    \item \textbf{Large Language Models (LLMs):} The AI models with semantic and grammatical understanding are used to detect accurate Bangla sign language from input signs that were detected in an manner were no order was followed. \cite{llm_reasoning_review}.
+\end{itemize}
+
+\section{Literature Review}
+
+In these section, we have went over recent developments and works regarding sign lanuage detection and recognition. We took a critical look to understand the advancements and lackings in each work.
+
+\subsection{Similar Applications}
+
+While there are many mobile and web applications that exist for American Sign Language (ASL) and other popular sign languages (e.g., Hand Talk, SignAll), the Bangla Sign Language (BdSL) resources and tools are still in a every novice stage. Most prominent BdSL applications function merely as static dictionaries (displaying pre-recorded videos of signs) or support very limited isolated word recognition without sentence-level context. There is a lack of comprehensive, real-time BdSL translation applications that can facilitate continuous, two-way conversational communication using modern generative AI and edge-deployable architectures.
+
+\subsection{Related Research}
+
+\subsubsection{Transformer based sign-to-text translation for Bangladeshi sign language (2025)}
+In this study, the authors tried sign language recognition by implementing Custom Multi-layer Transformer encoder, LSTM. To train and verify the architecture, the Custom dataset (Public) dataset was used. It was a Custom Multi-layer Transformer encoder. Dataset was limited to only 102 isolated words, with no continuous sentence translation.\cite{rayhan_bdsl_transformer_2025}
+
+\subsubsection{SignBind-LLM: Multi-Stage Modality Fusion for Sign Language Translation (2025)}
+The authors of this study explored the application of Multi-stream architecture: separate models for continuous sign recognition, finger spelling detection, and lip reading; deployed Transformer-based fusion encoder with gating mechanism; Large Language Model (LLM) for final translation to provide more accurate sign language translations, and finally tested their system using the How2Sign, ChicagoFSWildPlus, BOBSL dataset \cite{142}. However, this will fail for BdSL since it’s a low resource language and the computational requirement is really high.\cite{wang_signbind_llm_2025}
+
+\subsubsection{BdSL-SPOTER: A Transformer-Based Framework for Bengali Sign Language Recognition with Cultural Adaptation (2025)}
+In this study, the authors investigated sign language recognition by implementing 4 layerTransformer Encoder Architecture, Learnable positional encodings, Training optimization via curriculum learning. To train and validate their architecture, the BdSLW60 dataset was used. It achieved high accuracy with a 22.82\% improvement over the Bi-LSTM baseline, was also found be computationally efficient: requires an average time of 4.8 minutes for training and uses just 0.847M parameters, Supports real-time recognition with 127 FPS on A100 GPUs and 23 FPS on consumer CPUs. Featured culturally adapted pose normalization made specifically for the compact BdSL signing space. Focused solely on isolated, individual signs rather than continuous signs, But misclassifications still occured when there was semantically similar signs that have similar hand gestures, there was no dataset contributions.\cite{study_bdsl_spoter_2025}
+
+\subsubsection{Augmenting Sign Language Translation Datasets with Large Language Models (2025)}
+The authors of this study explored the application of a simplified, lightweight version of the Transformer-based Signformer architecture. MediaPipe Holistic for extracting body, hand, and face key landmarks. Used GPT-4 as a the default LLM for paraphrasing the aligns with the dataset. A two-stage training schedule: pre-training on the augmented corpus and fine-tuning on the original data. To further tackle the challenges in sign language translation, evaluated their system using the PHOENIX14T (German), GSL (Greek), and LSA-T (Argentinian) dataset \cite{125}. Improved translation generalization on datasets where the complexity was comparatively lower by exposing the decoder to paraphrastic re-orderings and lexical variations. Reduced input dimensionality and background noise by using skeleton data, enabled efficient training suited for edge devices. The augmentation strategy was not a universal solution, disrupted performance on extremely simple, saturated datasets and failed to mitigate sparsity issues on highly complex, long-tail datasets. The model's absolute BLEU scores lag behind state-of-the-art results. \cite{study_augmenting_llm_2025}
+
+\subsubsection{Modern YOLO Architectures for Sign Language Recognition: Experimental Evaluation and Insights (2025)}
+Focusing on enhancing gesture translation, this research deployed YOLOv9, YOLOv12, RT-DETR(Transformer-based detection). The methodology was tested against the Kaggle SLR dataset, Image based (static gestures) dataset to benchmark its performance. Very fast(real time detection), high precision and recall, good for object detection tasks. Very small dataset, Limited classes(only 5 signs), cannot handle dynamic gestures well, sensitive to background and lighting.\cite{study_yolo_slr_2025}
+
+\subsubsection{Sign-to-Speech: Generating Natural Language Audio from Skeletal Sign Language Input Using Transformer Models (2025)}
+This paper presents a framework for sign language interpretation utilizing Pose Estimation(MediaPipe/OpenPose), Pose2Text Transformer, Tacotron2(Text-to-speech), WaveGlow(audio generation) \cite{56, 57}. The experimental evaluation was conducted on the RWTH-PHOENIX(German SL), Custom ISL-TTS dataset dataset. Handles continuous gestures, uses transformer, Multimodal learning(pose+text+audio), sign to speech. High cost, latency(1.8 seconds), need large dataset, errors in similar gestures. \cite{study_sign_to_speech_2025}
+
+\subsubsection{Two Dimensional Convolutional Neural Network Approach for Real-Time Bangla Sign Language Characters Recognition and Translation (2025)} 
+This work introduces a recognition pipeline based on 2D Convolutional Neural Network (CNN) architecture with data augmentation techniques like zoom, shear, and rotation. Data from the Ishara-Borno dataset was used to verify the method they used. The model achieved an impressive accuracy of 99.4\% when was verified. Additionally, it was successful at recognizing 36 different types of Bengali signs. But the most impressive part was that it did all of it very fast in real time. \cite{study_2d_cnn_bdsl_2025}
+
+\subsubsection{Dual-Stream BiLSTM–Transformer Architecture for Real-Time Two-Handed Dynamic Sign Language Gesture Recognition (2025)}
+A dual stream architecture combining BiLSTM networks was implemented by the authors for sign language detection. To cross check the architecture, a custom two handed gesture dataset was used. It was successful at real time recoginition . However it's dependency on high computing and inability to be deployed on edge devices makes it unsuitable for real world use.\cite{study_dualstream_bilstm_2025}
+
+\subsubsection{BAUST Lipi: A BdSL Dataset with Deep Learning Based Bangla Sign Language Recognition (2024)}
+The authors of this study used Long Term-Short Term Memory Layers. The study also used Decision Tree, Support Vector Machine and Standard CNN. The methodology was tested against the BAUST LIPI dataset to benchmark its performance. The hybrid architecture effectively combines a CNN's feature extraction capabilities with an LSTM's ability to capture long-term dependencies. Introduces a highly diverse, newly created dataset captured using various smartphone cameras under multiple background settings (white, colorful, natural) and nighttime conditions. limited to isolated alphabet recognition and does not cover words or continuous sign language, The proposed model has not yet been validated with other existing BdSL datasets for broader generalization or videos.\cite{study_baust_lipi_2024}
+
+\subsubsection{BTVSL: A Novel Sentence-Level Annotated Dataset for Bangla Sign Language Translation (2024)}\cite{study_btvsl_2024}
+This paper presents a framework for sign language interpretation utilizing Four deep-learning Sign Language Translation (SLT) models were evaluated: TwoStream-SLT, CiCo-Sign Language Retrieval, Gloss Attention for Gloss-free Sign Language Translation (GASLT), and Gloss-free Sign Language Translation (GSFLT). The experimental evaluation was conducted on the BTVSL (Bangla Text to Video Sign Language) dataset. sentence-level annotated dataset. dataset captures a broader spectrum of expressions. performance is generally lower, Google API lacking punctuation support for Bangla, which required manual segmentation and intervention.
+
+\subsubsection{A Reliable Bangla Sign Language Recognition System Using MediaPipe and LSTM Networks (2024)}\cite{study_reliable_mediapipe_2024}
+In this study, the authors investigated sign language recognition by implementing MediaPipe for skeletal landmark extraction followed by a Long Short-Term Memory (LSTM) network \cite{92, 93}. To train and validate their architecture, the Custom BdSL dataset covering common daily phrases dataset was utilized. The computationally lightweight approach using MediaPipe avoids processing full image frames, making the model highly suited for edge-device integration. Effective at capturing temporal dynamics over short sequences. Struggles with highly overlapped hand gestures or severe occlusions. Relies strictly on skeletal data and misses important non-manual cues like facial expressions.
+
+\subsubsection{Real-time Assamese Sign Language Recognition using MediaPipe and Deep Learning (2023)}
+This work introduces a recognition pipeline based on MediaPipe, FNN, OpenCV. Data from the Custom dataset(self collected), stored as CSV dataset was leveraged to validate the approach. very high accuracy, lightweight and realtime capable, works on low end devices, uses landmark base features. very small dataset, only 9 static signs, no synamic gesture support, limited.\cite{study_assamese_slr_2023}
+
+\subsubsection{Multi-channel Transformers for Multi-articulatory Sign Language Translation (2020)}
+The authors of this study explored the application of A novel Multi-channel Transformer architecture. Key components : Channel-wise Self-Attention, Multi-channel Encoder Attention, Multi-channel Decoder Attention. Optimized using a combination of Translation Loss and Channel Anchoring Loss. To tackle the challenges in sign language translation, evaluating their system using the RWTH-PHOENIX-Weather-2014T dataset \cite{102}. Removes the dependency on expensive, manually annotated gloss-level supervision. Successfully models both inter and intra contextual relationships between asynchronous manual and non-manual sign articulators (hands, face, body). Employs anchoring losses to preserve channel-specific information and regularize the translation loss, which counteracts over-fitting. Poor translations occasionally include word repetitions or complete failures in capturing the conveyed information.\cite{study_multichannel_trans_2020}
+
+\subsection{Summary of Literature}
+
+\begin{longtable}{|p{4cm}|p{1cm}|p{3cm}|p{5.5cm}|}
+\caption{Summary of Related Research Papers} \label{tab:lit_review} \\
+\hline
+\textbf{Title} & \textbf{Year} & \textbf{Dataset} & \textbf{Findings} \\
+\hline
+\endfirsthead
+\multicolumn{4}{c}%
+{\tablename\ \thetable\ -- \textit{Continued from previous page}} \\
+\hline
+\textbf{Title} & \textbf{Year} & \textbf{Dataset} & \textbf{Findings} \\
+\hline
+\endhead
+\hline \multicolumn{4}{r}{\textit{Continued on next page}} \\
+\endfoot
+\hline
+\endlastfoot
+Transformer based sign-to-text translation for Bangladeshi sign language \cite{rayhan_bdsl_transformer_2025} & 2025 & Custom dataset (Public) & Custom Multi-layer Transformer encoder but, Dataset is limited to 102 isolated words, no continuous sentence-level translation. \\ \hline
+SignBind-LLM\cite{study_signbind_llm_2025}: Multi-Stage Modality Fusion for Sign Language Translation & 2025 & How2Sign, ChicagoFSWildPlus, BOBSL & Multi-stream architecture: separate models for continuous sign recognition, fingerspelling detection, and lipreading; Large Language Model (LLM) for final translation but, High computational complexity,requires large-scale annotated datasets, not optimized for low-resource languages like BdSL, difficult real-time deployment, complex training pipeline \\ \hline
+BdSL-SPOTER\cite{study_bdsl_spoter_2025}: A Transformer-Based Framework for Bengali Sign Language Recognition & 2025 & BdSLW60 & Achieves high accuracy with a 22.82\% improvement over the Bi-LSTM baseline, Highly computationally efficient: requires only 4.8 minutes for training and uses just 0.847M parameters , Supports real-time recognition with 127 FPS on A100 GPUs and 23 FPS on consumer CPUs .Features culturally adapted pose normalization tailored specifically to the more compact BdSL signing space. but, focuses solely on isolated, individual signs rather than continuous signing, Misclassifications still occur between semantically similar signs that have similar hand shapes, no dataset contributions \\ \hline
+Augmenting Sign Language Translation Datasets with Large Language Models \cite{125, study_augmenting_llm_2025} & 2025 & PHOENIX14T (German), GSL (Greek), and... & Improves translation generalization on medium-complexity datasets by exposing the decoder to paraphrastic re-orderings and lexical variations .Reduces input dimensionality and background noise by using skeleton data, enabling efficient training suited for edge devices. but, The augmentation strategy is not a universal solution, hurts performance on extremely simple, saturated datasets and fails to mitigate sparsity issues on highly complex, long-tail datasets .The model's absolute BLEU scores lag behind state-of-the-art results . \\ \hline
+Modern YOLO Architectures for Sign Language Recognition: Experimental Evaluation \cite{study_yolo_slr_2025} & 2025 & Kaggle SLR dataset, Image based (stat... & Very fast(real time detection), high precision and recall, good for object detection tasks but, Very small dataset, Limited classes(only 5 signs),cannot handle dynamic gestures well, sensitive to background and lighting \\ \hline
+Sign-to-Speech: Generating Natural Language Audio from Skeletal Sign Language Input \cite{study_sign_to_speech_2025} & 2025 & RWTH-PHOENIX (German SL), Custom ISL-T... & Handles continuous gestures, uses transformer, Multimodal learning(pose+text+audio), sign to speech but, High cost, latency(1.8 seconds), need large dataset, errors in similar gestures \\ \hline
+Two Dimensional Convolutional Neural Network Approach for Real-Time BdSL \cite{207} & 2025 & Ishara-Borno dataset & The model achieves an impressive accuracy of 99.4\% in recognizing 36 diverse Bengali sign language characters. Very fast real-time recognition suited for interactive applications. but, The dataset primarily consists of static images captured with smartphones rather than continuous video streams. Only recognizes isolated characters instead of full words or sentences. \\ \hline
+Dual-Stream BiLSTM–Transformer Architecture for Real-Time Dynamic Sign Language \cite{study_dualstream_bilstm_2025} & 2025 & Custom dynamically collected two-hand... & Effectively models both sequential and spatial components of dynamic gestures simultaneously. Achieves real-time recognition speeds while handling complex two-handed signs with high precision. but, High computational demand for simultaneous transformer and LSTM streams making deployment on resource-constrained devices difficult. Lack of evaluation on benchmark datasets limits comparability. \\ \hline
+BAUST Lipi: A BdSL Dataset with Deep Learning Based Bangla Sign Language Recognition \cite{study_baust_lipi_2024} & 2024 & BAUST LIPI. & The hybrid architecture effectively combines a CNN's feature extraction capabilities with an LSTM's ability to capture long-term dependencies .Introduces a highly diverse, newly created dataset captured using various smartphone cameras under multiple background settings (white, colorful, natural) and nighttime conditions. but, limited to isolated alphabet recognition and does not cover words or continuous sign language, The proposed model has not yet been validated with other existing BdSL datasets for broader generalization or videos \\ \hline
+BTVSL: A Novel Sentence-Level Annotated Dataset for Bangla Sign Language Translation \cite{study_btvsl_2024} & 2024 & BTVSL (Bangla Text to Video Sign Lang... & sentence-level annotated dataset. dataset captures a broader spectrum of expressions. but, performance is generally lower, Google API lacking punctuation support for Bangla, which required manual segmentation and intervention, \\ \hline
+A Reliable Bangla Sign Language Recognition System Using MediaPipe and LSTM \cite{study_reliable_mediapipe_2024} & 2024 & Custom BdSL dataset covering common d... & Computationally lightweight approach using MediaPipe avoids processing full image frames, making the model highly suited for edge-device integration. Effective at capturing temporal dynamics over short sequences. but, Struggles with highly overlapped hand gestures or severe occlusions. Relies strictly on skeletal data and misses important non-manual cues like facial expressions. \\ \hline
+Real-time Assamese Sign Language Recognition using MediaPipe and Deep Learning \cite{study_assamese_slr_2023} & 2023 & Custom dataset(self collected), store... & very high accuracy, lightweight and realtime capable, works on low end devices, uses landmark base features but, very small dataset, only 9 static signs, no synamic gesture support, limited Dataset\\ \hline
+Multi-channel Transformers for Multi-articulatory Sign Language Translation \cite{study_multichannel_trans_2020} & 2020 & RWTH-PHOENIX-Weather-2014T & Removes the dependency on expensive, manually annotated gloss-level supervision .Successfully models both inter and intra contextual relationships between asynchronous manual and non-manual sign articulators (hands, face, body) .Employs anchoring losses to preserve channel-specific information and regularize the translation loss, which counteracts over-fitting. but, Poor translations occasionally include word repetitions or complete failures in capturing the conveyed information. \\ \hline
+\end{longtable}
+
+\section{Gap Analysis}
+In this paper, critical review of the existing literature reveals some important gaps in the area of Bangla Sign Language (BdSL) recognition.
+
+    First, the majority of studies focus on isolated static signs or limited vocabularies (e.g., 10-100 words). They cannot detect signs continuously in real-time, which greatly limits their use in natural conversational environment.
+    
+    Second, although some architectures like SignBind-LLM \cite{wang_signbind_llm_2025} introduce multi-modal fusion, they are computationally complex and require massive datasets, which makes them unsuitable for edge device deployment or low resource languages such as BdSL.
+ 
+
+    Third, the existing systems do not understand semantics. The output was single and individual strings without any grammatical structure to it; making the translations robotic. Also, it was not possible to detect things like names, places and so on.
+
+    To solve all the existing issues, our project, \textbf{Onubad}, proposes a \textbf{Dual-Stream Semantic Fusion Architecture}. By running a lightweight Transformer model \cite{transformer_seq} (for recognizing frequent whole-word signs) in parallel with a YOLO-based character spotter (for tracking fingerspelling), we can achieve infinite vocabulary support at high framerates. These parallel streams will then be glued and processed by a Quantized Large Language Model (LLM) \cite{llm_reasoning_review}. This LLM will act as a semantic reasoning engine, reconstructing the detected disjointed signs and letters into grammatically accurate, context-aware Bengali sentences. This novel architecture hopefully will bridge the gap between simple gesture pattern matching and true natural language generation \cite{llm_reasoning_review}.
+
+\section{Summary}
+This chapter has worked as the foundation for the knowledge required for AI-driven BdSL recognition. We reviewed the literature extensively, covering state-of-the-art models including Transformers \cite{transformer_seq}, MediaPipe \cite{mediapipe_framework} and YOLO \cite{yolo_nano_ref}configurations, and identified key limitations of existing isolated-word and computationally heavy multimodal systems. The identified gaps directly motivate the central aim of this project, therefore helps to establish a realtime, edge-deployable Dual Stream Semantic Fusion Architecture with LLM-based linguistic reasoning for natural, continuous BdSL translation.

@@ -1,0 +1,115 @@
+\chapter{Implementation and Results}
+This chapter provides an overview of the technical environment, pipeline setup, and initial testing workflows configured for the "Onubad" Bangla Sign Language recognition system. It outlines the software and hardware infrastructure, feature extraction setup, dual-stream recognition integration, and local quantized Large Language Model (LLM) execution setup.
+
+\section{Environment Setup}
+The implementation environment is designed to support real-time skeletal landmark tracking, dual-stream vision inference, and local LLM reasoning on consumer-grade edge hardware without relying on expensive cloud APIs.
+
+\subsection{Hardware Infrastructure}
+The physical implementation environment was configured using standard consumer development hardware:
+\begin{itemize}
+\item \textbf{Processing Unit:} Workstation equipped with a multi-core CPU and an entry-level NVIDIA GPU to support model training and concurrent inference.
+\item \textbf{Video Sensor:} Standard RGB webcam capturing video streams at 30 frames per second (FPS) for continuous landmark extraction.
+\item \textbf{Memory & Storage:} 16 GB RAM and local SSD storage to ensure fast I/O throughput during dataset loading and 4-bit quantized model inference.
+\end{itemize}
+
+\subsection{Software Stack and Libraries}
+The application stack leverages open-source Python frameworks optimized for edge deployment and computer vision:
+\begin{itemize}
+\item \textbf{Programming Environment:} Python 3.10 utilizing PyTorch and TensorFlow for deep learning pipeline construction.
+\item \textbf{Landmark Feature Extraction:} Google MediaPipe framework for real-time 3D $(x, y, z)$ skeletal coordinate extraction from video frames, paired with OpenCV for stream pre-processing.
+\item \textbf{Dual-Stream Vision Engines:} Ultralytics YOLO-Nano framework for character and fingerspelling tracking, alongside PyTorch-based Transformer modules for temporal sequence word recognition.
+\item \textbf{Semantic Reconstruction Engine:} HuggingFace Transformers, \texttt{bitsandbytes}, and GGUF runtime libraries configured to host local 4-bit quantized edge LLMs (e.g., Gemma 2B / Qwen 2.5).
+\item \textbf{Audio Synthesis:} Localized Bangla Text-to-Speech (TTS) integration for converting output sentences into natural audio speech.
+\end{itemize}
+
+\subsection{Pipeline Integration}
+The end-to-end execution pipeline processes input video through three sequential phases:
+\begin{enumerate}
+\item \textbf{Coordinate Extraction:} Video frames captured at 30 FPS are processed via MediaPipe to extract spatial skeletal coordinates directly in system memory, preserving biometric privacy.
+\item \textbf{Parallel Dual-Stream Recognition:} Extracted landmark vectors are passed simultaneously into:
+\begin{itemize}
+\item The Transformer sequence model for detecting frequently used whole-word signs.
+\item The lightweight YOLO-Nano model for tracking individual fingerspelled characters.
+\end{itemize}
+\item \textbf{Semantic Fusion & LLM Reasoning:} Recognized words and characters are chronologically merged and processed by the local 4-bit quantized LLM to reconstruct grammatically correct Bangla sentences.
+\end{enumerate}
+
+\section{Testing and Evaluation}
+Module-level verification procedures were conducted to ensure system stability during development:
+\begin{itemize}
+\item \textbf{Landmark Extraction Latency:} Evaluated MediaPipe processing speed to verify continuous 30 FPS tracking without frame dropping on CPU devices.
+\item \textbf{Stream Synchronization:} Tested concurrent execution of the Transformer word spotter and YOLO character spotter to prevent thread blocking during live inputs.
+\item \textbf{Local LLM Memory Footprint:} Measured RAM and VRAM utilization of the 4-bit quantized edge LLM to ensure execution capabilities on offline consumer hardware.
+\end{itemize}
+
+\section{Results and Discussion}
+The dual-stream vision recognition architecture—comprising the Transformer-based Word Spotter and the YOLO-Nano Character Spotter—was evaluated on benchmark datasets to quantify classification performance, computational complexity, and convergence characteristics.
+
+\subsection{Transformer Word Spotter Performance}
+The Word Spotter model processes temporal sequence inputs of 30 frames, where each frame contains 258 skeletal landmark coordinates extracted via MediaPipe Holistic. The network structure features a custom \texttt{PositionalEmbedding} layer followed by a \texttt{TransformerEncoder} block ($1$ attention head, $258$ key dimensions, dropout $= 0.3$), 1D Global Max Pooling, and a final 102-class Softmax dense layer.
+
+\begin{table}[h]
+\centering
+\caption{Transformer Word Spotter Architectural Specifications and Training Parameters}
+\label{tab:transformer_specs}
+\begin{tabular}{|l|l|}
+\hline
+\textbf{Parameter / Specification} & \textbf{Value} \\ \hline
+Input Tensor Dimensions & $30 \text{ frames} \times 258 \text{ landmark features}$ \\ \hline
+Vocabulary Size (Classes) & $102 \text{ BdSL word classes}$ \\ \hline
+Positional Embedding Parameters & $7,740$ \\ \hline
+Transformer Encoder Parameters & $270,646$ \\ \hline
+Classifier Head Parameters & $26,418$ \\ \hline
+Total Trainable Parameters & $304,804$ ($1.16 \text{ MB}$) \\ \hline
+Total Model Footprint & $3.49 \text{ MB}$ (including optimizer state) \\ \hline
+Training Dataset Size & $1,836 \text{ sequence samples}$ \\ \hline
+Test Dataset Size & $1,224 \text{ sequence samples}$ \\ \hline
+Optimizer / Loss Function & Adam / Categorical Cross-Entropy \\ \hline
+\end{tabular}
+\end{table}
+
+The empirical evaluation of the Word Spotter model on $1,224$ unseen test sequences across all $102$ BdSL vocabulary classes demonstrated strong classification accuracy and high precision/recall balance, as presented in Table~\ref{tab:transformer_metrics}.
+
+\begin{table}[h]
+\centering
+\caption{Quantitative Evaluation Metrics for Transformer Word Spotter ($102$ Classes)}
+\label{tab:transformer_metrics}
+\begin{tabular}{|l|c|}
+\hline
+\textbf{Metric} & \textbf{Achieved Score (\%)} \\ \hline
+\textbf{Overall Test Accuracy} & \textbf{95.18\%} \\ \hline
+Macro-Averaged Precision & 95.34\% \\ \hline
+Macro-Averaged Recall & 95.50\% \\ \hline
+Macro-Averaged F1-Score & 95.00\% \\ \hline
+Weighted Precision & 96.00\% \\ \hline
+Weighted Recall & 95.00\% \\ \hline
+Weighted F1-Score & 95.00\% \\ \hline
+\end{tabular}
+\end{table}
+
+The high macro and weighted metrics confirm that the temporal self-attention mechanism effectively captures sequential hand-pose dynamics across BdSL sign gestures without suffering from class imbalance or overfitting.
+
+\subsection{YOLO-Nano Character Spotter Performance}
+The Character Spotter module utilizes a lightweight YOLOv8 Nano classification network (\texttt{yolov8n-cls}) optimized for real-time edge tracking of individual fingerspelled Bangla characters. The model was trained for 50 epochs on the fingerspelling dataset.
+
+\begin{table}[h]
+\centering
+\caption{Validation Performance Metrics for YOLO-Nano Character Spotter}
+\label{tab:character_metrics}
+\begin{tabular}{|l|c|}
+\hline
+\textbf{Evaluation Metric} & \textbf{Best Validation Result} \\ \hline
+\textbf{Top-1 Classification Accuracy} & \textbf{94.21\%} \\ \hline
+\textbf{Top-5 Classification Accuracy} & \textbf{99.51\%} \\ \hline
+Minimum Validation Loss & 0.1929 \\ \hline
+Training Schedule & 50 Epochs \\ \hline
+\end{tabular}
+\end{table}
+
+The Top-1 classification accuracy of $94.21\%$ and Top-5 accuracy of $99.51\%$ confirm that the vision backbone achieves fast frame-level inference suitable for real-time fingerspelled character tracking.
+
+\subsection{Summary of Dual-Stream Vision Performance}
+Both components of the dual-stream vision recognition phase demonstrate strong standalone performance, exceeding $94\%$ accuracy across both word-level gestures and character-level fingerspelling. These verified outputs provide a reliable, high-precision text stream for the subsequent quantized LLM semantic reconstruction phase.
+
+\section{Summary}
+This chapter detailed the software, hardware, and modular implementation setup established for the Onubad system. By integrating lightweight MediaPipe landmark extraction, dual-stream vision recognition, and a local quantized LLM engine, the foundational technical framework for real-time Bangla Sign Language translation has been constructed.

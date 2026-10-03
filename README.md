@@ -1,50 +1,97 @@
-# BdSL Real-Time Translation System - V1
+# Onubad: BdSL Real-Time Translation System
 
-A desktop application designed for real-time Bangladeshi Sign Language (BdSL) translation. This project leverages deep learning, computer vision, and a dynamic stream-routing architecture to detect and translate both static fingerspelling and dynamic whole-word gestures into text.
+A comprehensive AI-based Bangla Sign Language (BdSL) recognition and translation system. This project leverages computer vision, deep learning dual-stream recognition, and a quantized Large Language Model (LLM) pipeline to translate both static fingerspelled characters and dynamic whole-word gestures into text and natural speech.
 
-## Features
-*   **Real-Time PyQt5 UI:** A clean, responsive dashboard featuring a live webcam feed, current detection mode, and a live transcript history box.
-*   **Multi-Threaded Video Capture:** Utilizes a custom threading implementation (`CaptureThread`) with OpenCV to maintain a stable 30 FPS webcam feed without blocking the main UI.
-*   **MediaPipe Landmark Extraction:** Extracts a robust 258-dimensional feature vector combining pose (132 points), left hand (63 points), and right hand (63 points) landmarks.
-*   **Dynamic Stream Routing:** Intelligently switches between translation models based on the subject's hand bounding box area. If the hand area is under 800 px², the system routes the cropped hand ROI to the YOLO model for fingerspelling; otherwise, it defaults to the Transformer model for whole-word recognition.
-*   **YOLOv8n Fingerspelling Classification:** Custom YOLOv8 Nano pipeline trained on BdSL fingerspelling datasets with built-in data augmentation.
+---
 
-## Repository Structure
-*   `main.py`: The core PyQt5 application and execution pipeline.
-*   `src/capture/capture.py`: Multi-threaded OpenCV webcam capture[cite: 1].
-*   `src/landmarks/extractor.py`: MediaPipe Holistic wrapper for landmark extraction and bounding-box calculation[cite: 2].
-*   `train_yolo.py`: Training script for the YOLOv8n-cls fingerspelling model.
-*   `fingerspell_dataset.yaml`: Dataset configuration for YOLO[cite: 5].
-*   `requirements.txt`: Python environment dependencies.
+## 🏗️ Repository Architecture
 
-## Installation
+The repository is organized into three main modules following our dual-stream vision recognition and semantic fusion architecture:
+
+```
+BDSL_project/
+├── Character Spotter/            # YOLOv8 Nano fingerspelling character spotter
+│   ├── data/                     # Dataset directories
+│   ├── models/                   # Trained model weights
+│   ├── runs/                     # YOLO training runs & evaluation metrics
+│   ├── src/                      # Source code (webcam capture, landmark extraction)
+│   ├── fingerspell_dataset.yaml  # Dataset configuration
+│   ├── main.py                   # PyQt5 real-time application entry point
+│   ├── train_yolo.py             # YOLOv8n-cls training script
+│   └── requirements.txt          # Module dependencies
+│
+├── Word Spotter/                 # Transformer-based word spotter model
+│   ├── bdslp-transformer.ipynb   # Model training & evaluation notebook
+│   ├── video_classifier.weights.h5 # Trained Transformer weights
+│   └── requirements.txt          # Module dependencies
+│
+├── Quantized LLM/                # Semantic reconstruction engine (In Development)
+│   └── README.md                 # Quantized edge LLM setup & prompt integration
+│
+├── 1.intro.tex                   # Project Introduction & Methodology LaTeX chapter
+├── 4.implementation.tex          # Implementation & Results LaTeX chapter
+└── README.md                     # Project documentation
+```
+
+---
+
+## 🌟 Key Components & Models
+
+### 1. 🔤 Character Spotter (YOLOv8 Nano)
+- **Architecture:** `yolov8n-cls` classification backbone optimized for edge devices.
+- **Task:** Tracking and recognizing individual fingerspelled Bangla characters.
+- **Performance:**
+  - **Top-1 Accuracy:** `94.21%`
+  - **Top-5 Accuracy:** `99.51%`
+  - **Min Validation Loss:** `0.1929`
+
+### 2. 🔠 Word Spotter (Transformer Encoder)
+- **Architecture:** Spatial-Temporal Transformer model with custom `PositionalEmbedding` and `TransformerEncoder` layers (1 attention head, key dim = 258, dropout = 0.3).
+- **Features:** 30-frame sequence input using 258 MediaPipe Holistic skeletal landmark coordinates per frame $(132 \text{ pose} + 63 \text{ left hand} + 63 \text{ right hand})$.
+- **Vocabulary:** 102 BdSL word classes.
+- **Performance:**
+  - **Overall Test Accuracy:** `95.18%`
+  - **Macro Precision:** `95.34%`
+  - **Macro Recall:** `95.50%`
+  - **Macro F1-Score:** `95.00%`
+
+### 3. 🧠 Quantized LLM Semantic Reconstruction *(Upcoming)*
+- Local 4-bit quantized edge LLM integration (e.g., Gemma 2B / Qwen 2.5) for converting predicted character/word streams into grammatically correct Bangla sentences.
+
+---
+
+## 🚀 Getting Started
+
+### Installation & Environment Setup
 
 1. **Clone the repository:**
    ```bash
-   git clone [https://github.com/YourUsername/BdSL-Translation.git](https://github.com/YourUsername/BdSL-Translation.git)
-   cd BdSL-Translation
-
-2.  **Install dependencies:**
-Ensure you have Python 3.8+ installed, then run:
-
-   ```bash
-   pip install -r requirements.txt
+   git clone https://github.com/YourUsername/BDSL_project.git
+   cd BDSL_project
    ```
-**Required packages include:** torch, torchvision, opencv-python, mediapipe, ultralytics, and PyQt5.
 
-3. **Download or Train Models:**
+2. **Set up Python Environment:**
+   Ensure you have Python 3.10 installed:
+   ```bash
+   pip install -r "Character Spotter/requirements.txt"
+   ```
 
-Pre-trained: Ensure your trained models are placed in the models/ directory or runs/classify/models/yolo_fingerspell_run/weights/.
-
-Train from scratch: Run python train_yolo.py to train the YOLOv8n-cls model on your local dataset. Weights will be saved to models/yolo_fingerspell_run/weights/best.pt.
-
-4. **Usage**
-To launch the real-time translation interface, execute:
-
-   ```Bash
+3. **Running the Character Spotter Application:**
+   ```bash
+   cd "Character Spotter"
    python main.py
    ```
-The UI will initialize the webcam, load the YOLO classification model (with a fallback to the base model if custom weights are missing), and immediately begin processing hand gestures. The top prediction will display on the screen once the model hits a 60% confidence threshold.
 
+4. **Training / Evaluating Word Spotter:**
+   Open and execute `Word Spotter/bdslp-transformer.ipynb` in Jupyter Notebook or VS Code.
 
-Developed by **Md. Rayhan Islam Showrav - 0112230810**.
+---
+
+## 📄 Research & Documentation
+The complete methodology, system design, hardware setup, and empirical evaluation matrices are documented in LaTeX:
+- `1.intro.tex`: Project overview, dual-stream architecture, and motivation.
+- `4.implementation.tex`: Comprehensive experimental setup, hardware specs, and accuracy evaluation tables.
+
+---
+
+Developed by **Team Auditory Cortex** (Md. Rayhan Islam Showrav - 0112230810).

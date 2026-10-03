@@ -1,0 +1,71 @@
+\chapter{Introduction}
+This chapter is an overview of our entire proposed project ,with the problem background ,motivation of the project and the main objectives. The proposed methodology, expected outcomes and overall structure of the report are also briefly described in the report.
+
+\section{Project Overview}
+In many parts of the world deaf and hearing individuals face a significant challenge to communicate,mainly in Bangladesh technological support and awareness for Bangla SIgn Language are still limited.As sign language is a primary mean of communication for the deaf community and very few people know sign language outside the community,it creates a gap of communication necessary situations such as education,healthcare,daily life communication and public services.But existing systems for sign language detection are often limited to word level detection and alphabets.Thus,they do not provide a complete ,real time solution for natural sentence construction  with semantic meaning.
+
+This project, titled \textbf{“Onubad: An AI-Based Bangla Sign Language Recognition System”}, aims to solve this problem by developing a system which is capable of recognizing BdSL gestures and translating them into meaningful sentences and speech. The proposed system will take input from real time webcam feeds and also uploaded video clips, making it suitable for different use case scenarios. The output will include both textual translation of sentences and speech generation using text-to-speech (TTS), with the integration of a quantized language model to improve contextual accuracy,semantic meaning and next word suggestions.
+The final implementation is a web application or system built in devices, which will allow users to interact through a browser or directly with the device.
+This project aims to build an real time BdSL translation system which will also be accessible,scalable and can help reduce communication problems and promote and inclusive society.
+
+
+
+\section{Motivation}
+In Bangladesh, deaf and hard of hearing individuals commonly face communication problems significantly in classrooms, hospitals, and public services and daily conversations, as Bangla Sign Language (BdSL) is rarely understood by very few people. Although there is integration of artificial intelligence in sign language recognition, almost all research is focused on well resourced languages like American Sign Language. BdSL remains Overlooked, while existing solutions are limited to isolated signs rather than practical, sentence level translation and word predictions.
+This project solves that problem by applying multimodal approches,computer vision and LLM reasoning to create a real time BdSL translation system with highly predictable sentence and speech output.The goal of this project is social and technical which is to reduce the communication barriers for an overlooked community and integration of Large Language Models with quantization for semantic and natural sentence building.
+
+\section{Objectives}
+The main objective of this project is to build an accessible, scalable, low latency Bangla Sign Language (BdSL) translation system which is designed to  bridge the communication problems between deaf and hearing individuals. For achieving this goal, the project is centered around the  given below objectives: 
+
+\begin{itemize}
+    \item \textbf{Efficient Spatial-Temporal Feature Extraction:} To extract privacy preserving and computationally efficient skeletal landmarks from video inputs using pose estimation frameworks such as MediaPipe. This approach lessens the impact of background noise and lighting variations while maintaining low hardware requirements. 
+
+    \item \textbf{High Accuracy Sign Detection:} Building a transformer based model which is capable of analyzing temporal dependencies in BdSL.this will ensure accurate detection of BdSL isigns.
+
+    \item \textbf{Multi modality fusion:} Merging additional gestures such as face expressions,movements of lips,and hand position.This is the multimodal approach to improve detection of complex and continuous sign language.
+
+    \item \textbf{Sentence creation with context awareness:}Integrating a quantized LLM for creating context aware,grammatically correct sentences which will lead this project to simple word translation to real time context aware system.
+
+    \item \textbf{Scalable and Accessible Deployment:} Building a user friendly web application or integrated system with ui in devices capable of  run the  architecture without any hassle.
+    
+\end{itemize}
+\section{Methodology}
+The proposed methodology of this project is mainly a dual stream semantic fusion architecture, which differs from traditional pattern matching architectures. Instead of depending only on feature extraction and model prediction, the system also adds a linguistic reasoning by large language model to produce more natural and meaningful outputs. The overall architecture is divided into three main sequential phases. 
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{workflow.png}
+    \caption{Overall Workflow of the Proposed System}
+    \label{fig:workflow}
+\end{figure}
+
+\subsection{Feature Extraction}
+Firstly, the system captures input from a real time video stream of 30 fps or from uploaded video. The captured frames are processed using MediaPipe to extract key skeletal landmarks of sign languages and gestures and converted into structured vector coordinates.
+
+\subsection{Dual-Stream Parallel Recognition}
+After feature extraction, the coordinates are processed through two parallel modules designed to analyze different types stream: 
+
+\begin{itemize}
+    \item \textbf{Word Spotter:} A Transformer based sequence model that analyzes frequently used BdSL words by learning temporal patterns in the landmark data.
+
+    \item \textbf{Character Spotter:} A lightweight YOLO Nano based model that focuses on analyzing individual fingerspelled characters.
+\end{itemize}
+
+\subsection{LLM Semantic Reconstruction}
+Finally, the outputs from both the Word Spotter and Character Spotter are  into a mixed stream of words and characters. This sequence is then passed to a quantized Large Language Model (LLM). The LLM performs semantic reconstruction by correcting possible recognition errors, applying proper Bangla grammar, and generating highly predictable natural sentence.
+
+\section{Project Outcome}
+The expectation from this project is a functional,efficient and user friendly translation system which will assist in bridging the communication problem between deaf and hearing individuals with the society in general,And also for the quantized LLM integration,real time sentence level translation which are grammatically correct output;also a expected outcome.
+Overall, this project aims to provide a scalable and extensive foundation which will be further improved in the future by incorporating larger datasets, more advanced models, and additional multimodal features.
+Our project outcome is also a scalable and real time translation system which can be further improved in the future a lot with training with larger datasets,more advanced and accurate models and various multimodal features.
+
+\section{Organization of the Report}
+This report is organized into a few chapters to present the project in a structured and systematic way. 
+
+Chapter 1 introduces what the project is, the overview of the project, motivation behind this project, objectives, proposed methodology, and expected outcomes. 
+Chapter 2 presents what are the related works and  discussion and analysis of existing research papers of sign language detection. 
+Chapter 3 describes the proposed  system architecture with details, what are the design components, dataflows and workflows. 
+Chapter 4 focuses on how the project should be implemented, covering the tools and technologies, and process of development used to build the system. 
+Chapter 5 presents the results and evaluation matrices of the project, discussion and analysis of performance of the system  Finally, 
+Chapter 6 is end of the report by summarizing the overall work, discussions of the limitations, and suggestion of  possible future improvements and extensions of the project. 
+
